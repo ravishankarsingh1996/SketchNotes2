@@ -10,7 +10,7 @@ class PaperPainter extends CustomPainter {
 
   void paint(Canvas canvas, Size size) {
     Paint paint = new Paint()
-      ..color = color
+      ..color = color ?? Color(0xFFFFFFFF)
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
     for (int i = 0; i < points.length - 1; i++) {
