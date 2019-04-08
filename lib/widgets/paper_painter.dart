@@ -1,11 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:sketchnotes_flutter/models/PointsData.dart';
 
 class PaperPainter extends CustomPainter {
   PaperPainter(this.points, this.color);
 
-  final List<Offset> points;
+  final List<PointsData> points;
   final Color color;
 
   void paint(Canvas canvas, Size size) {
@@ -14,8 +15,10 @@ class PaperPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5.0;
     for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null)
-        canvas.drawLine(points[i], points[i + 1], paint);
+      if (points[i] != null && points[i + 1] != null){
+        paint.color = points[i].pen.color;
+        canvas.drawLine(points[i].offset, points[i + 1].offset, paint);
+      }
     }
   }
 

@@ -26,6 +26,7 @@ class Choice {
 
 const List<Choice> choices = const <Choice>[
   const Choice(title: 'New', icon: Icons.clear),
+  const Choice(title: 'Undo', icon: Icons.undo),
 ];
 
 
@@ -44,6 +45,10 @@ class MainPage extends StatelessWidget {
       interval: 25,
       child: paper,
     );
+  }
+
+  void undo(){
+    paper.undo();
   }
 
   void _select(BuildContext context, Choice choice) {
@@ -76,6 +81,12 @@ class MainPage extends StatelessWidget {
               icon: Icon(choices[0].icon),
               onPressed: () {
                 _select(context, choices[0]);
+              },
+            ),
+            IconButton(
+              icon: Icon(choices[1].icon),
+              onPressed: () {
+                undo();
               },
             ),
             DropdownButton<Color>(
