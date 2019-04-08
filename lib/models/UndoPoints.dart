@@ -11,5 +11,4 @@ class UndoPoints{
 void setEnd(var end){
     this.end = end;
 }
-
 }
