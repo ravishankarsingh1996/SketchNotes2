@@ -41,8 +41,4 @@ class _MyHomePageState extends State<MyHomePage> {
       paper: _paper,
     );
   }
-
-  void _addPage() {
-    //TODO
-  }
 }
