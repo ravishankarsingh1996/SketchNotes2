@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:sketchnotes_flutter/customUI/ColorPicker.dart';
 import 'package:sketchnotes_flutter/models/pen.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_colorpicker/material_picker.dart';
 import 'package:sketchnotes_flutter/widgets/user_preferences_provider.dart';
 
 const List _colors = [
@@ -31,12 +32,21 @@ const List<Choice> choices = const <Choice>[
   const Choice(title: 'Color Picker', icon: Icons.color_lens),
 ];
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key key, @required this.title, @required this.paper})
       : super(key: key);
 
   final String title;
   final paper;
+
+  @override
+  MainPageState createState() {
+    return new MainPageState();
+  }
+}
+
+class MainPageState extends State<MainPage> {
+  var pickerColor = Colors.black;
 
   Widget _backgroundBuilder({Color color = Colors.black}) {
     return GridPaper(
@@ -44,20 +54,20 @@ class MainPage extends StatelessWidget {
       divisions: 1,
       subdivisions: 1,
       interval: 25,
-      child: paper,
+      child: widget.paper,
     );
   }
 
   void undo() {
-    paper.undo();
+    widget.paper.undo();
   }
 
   void _select(BuildContext context, Choice choice) {
-    paper.clear();
+    widget.paper.clear();
   }
 
   void _setColor(Color c) {
-    paper.penColor(c);
+    widget.paper.penColor(c);
   }
 
   List<DropdownMenuItem<Color>> _buildColorList() {
@@ -76,7 +86,7 @@ class MainPage extends StatelessWidget {
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(title),
+              title: Text(widget.title),
               actions: <Widget>[
                 IconButton(
                   icon: Icon(choices[0].icon),
@@ -94,6 +104,51 @@ class MainPage extends StatelessWidget {
                   icon: Icon(choices[2].icon),
                   onPressed: () {
                     showDialog(
+                      context: context,
+                      child: AlertDialog(
+                        title: const Text('Pick a color!'),
+                        content: SingleChildScrollView(
+//                          child: ColorPicker(
+//                            pickerColor: pickerColor,
+//                            onColorChanged: (color){
+//                              pickerColor = color;
+//                              prefs.setPenColor(color);
+//                            },
+//                            enableLabel: true,
+//                            pickerAreaHeightPercent: 0.8,
+//                          ),
+                          // Use Material color picker:
+                          //
+                           child: MaterialPicker(
+                             pickerColor: pickerColor,
+                             onColorChanged: (color){
+                              pickerColor = color;
+                              prefs.setPenColor(color);
+                            },
+                             enableLabel: true, // only on portrait mode
+                           ),
+                          //
+                          // Use Block color picker:
+                          //
+                          // child: BlockPicker(
+                          //   pickerColor: currentColor,
+                          //   onColorChanged: changeColor,
+                          // ),
+                        ),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: const Text('Got it'),
+                            onPressed: () {
+                              setState(() =>  prefs.setPenColor(pickerColor));
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+
+
+                /*    showDialog(
                         context: context,
                         barrierDismissible: true,
                         builder: (context) {
@@ -124,7 +179,7 @@ class MainPage extends StatelessWidget {
                                   )),
                             ),
                           );
-                        });
+                        });*/
                   },
                 ),
               ],
@@ -132,7 +187,7 @@ class MainPage extends StatelessWidget {
             body: Column(
               children: <Widget>[
                 Expanded(
-                  child: paper,
+                  child: widget.paper,
                 ),
               ],
             ),
